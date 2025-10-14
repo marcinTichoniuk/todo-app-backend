@@ -57,6 +57,18 @@ app.put('/todos/:id', (req, res) => {
   return res.json(newTodo);
 });
 
+app.delete('/todos/:id', (req, res) => {
+  const todoId = parseInt(req.params.id);
+
+  const todoIndex = todos.findIndex((todo) => todo.id === todoId);
+
+  if (todoIndex === -1) return res.status(404).json({ message: 'Todo not found' });
+
+  todos.splice(todoIndex, 1);
+
+  return res.json(todos);
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}...`);
 });
