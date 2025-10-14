@@ -38,6 +38,22 @@ app.post('/todos', (req, res) => {
 
   todos.push(newTodo);
 
+  return res.status(201).json(newTodo);
+});
+
+app.put('/todos/:id', (req, res) => {
+  const todoId = parseInt(req.params.id);
+  const todoBody = req.body;
+
+  const todoIndex = todos.findIndex((todo) => todo.id === todoId);
+
+  if (todoIndex === -1) return res.status(404).json({ message: 'Todo not found' });
+
+  const todo = todos[todoIndex];
+  const newTodo = { ...todo, ...todoBody };
+
+  todos[todoIndex] = newTodo;
+
   return res.json(newTodo);
 });
 
