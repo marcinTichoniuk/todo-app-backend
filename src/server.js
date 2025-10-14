@@ -2,11 +2,17 @@ import express, { json } from 'express';
 
 const app = express();
 const PORT = 3000;
+const todos = [
+  { id: 1, text: 'Learn Node.js', completed: false },
+  { id: 2, text: 'Build TODO app', completed: false },
+];
 
+// middlewares
 app.use(json());
 
+// endpoints
 app.get('/', (req, res) => {
-  res.json({ message: 'Hello World' });
+  return res.json({ message: 'Hello World' });
 });
 
 app.listen(PORT, () => {
