@@ -1,5 +1,5 @@
 import express, { json } from 'express';
-import { createTodo, deleteTodo, getAllTodos, getTodoById, updateTodo } from './controllers/todoController.js';
+import todoRoutes from './routes/todoRoutes.js';
 
 const app = express();
 const PORT = 3000;
@@ -12,16 +12,10 @@ app.get('/', (req, res) => {
   return res.json({ message: 'Hello World' });
 });
 
-app.get('/todos', getAllTodos);
+// routes
+app.use('/todos', todoRoutes);
 
-app.get('/todos/:id', getTodoById);
-
-app.post('/todos', createTodo);
-
-app.put('/todos/:id', updateTodo);
-
-app.delete('/todos/:id', deleteTodo);
-
+// start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}...`);
 });
