@@ -8,9 +8,9 @@ export const getAllTodos = (req, res) => {
 };
 
 export const getTodoById = (req, res) => {
-  const todoId = parseInt(req.params.id, 10);
+  const { id } = req.params;
 
-  const todo = todos.find((todo) => todo.id === todoId);
+  const todo = todos.find((todo) => todo.id === id);
 
   if (!todo) return res.status(404).json({ message: 'Todo not found' });
 
@@ -20,8 +20,6 @@ export const getTodoById = (req, res) => {
 export const createTodo = (req, res) => {
   const { text } = req.body;
 
-  if (!text) return res.status(400).json({ message: 'Text is required' });
-
   const newTodo = { id: todos.length + 1, text, completed: false };
 
   todos.push(newTodo);
@@ -30,10 +28,10 @@ export const createTodo = (req, res) => {
 };
 
 export const updateTodo = (req, res) => {
-  const todoId = parseInt(req.params.id);
+  const { id } = req.params;
   const todoBody = req.body;
 
-  const todoIndex = todos.findIndex((todo) => todo.id === todoId);
+  const todoIndex = todos.findIndex((todo) => todo.id === id);
 
   if (todoIndex === -1) return res.status(404).json({ message: 'Todo not found' });
 
@@ -46,9 +44,9 @@ export const updateTodo = (req, res) => {
 };
 
 export const deleteTodo = (req, res) => {
-  const todoId = parseInt(req.params.id);
+  const { id } = req.params;
 
-  const todoIndex = todos.findIndex((todo) => todo.id === todoId);
+  const todoIndex = todos.findIndex((todo) => todo.id === id);
 
   if (todoIndex === -1) return res.status(404).json({ message: 'Todo not found' });
 
