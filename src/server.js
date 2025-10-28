@@ -1,8 +1,9 @@
 import express, { json } from 'express';
 import todoRoutes from './routes/todoRoutes.js';
+import { config } from './config/config.js';
 
 const app = express();
-const PORT = 3000;
+const PORT = config.port;
 
 // middlewares
 app.use(json());
