@@ -23,7 +23,6 @@ app.get('/', (req, res) => {
 app.use('/todos', todoRoutes);
 
 // start server
-
 const startServer = async () => {
   try {
     await connectDB();
