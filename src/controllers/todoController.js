@@ -1,56 +1,94 @@
-const todos = [
-  { id: 1, text: 'Learn Node.js', completed: false },
-  { id: 2, text: 'Build TODO app', completed: false },
-];
+import { Todo } from '../models/todoModel.js';
 
-export const getAllTodos = (req, res) => {
-  return res.json(todos);
+export const getAllTodos = async (req, res) => {
+  try {
+    const allTodos = await Todo.find();
+
+    return res.json(allTodos);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 };
 
-export const getTodoById = (req, res) => {
-  const { id } = req.params;
+export const getTodoById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const todo = await Todo.findById(id);
 
-  const todo = todos.find((todo) => todo.id === id);
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
 
-  if (!todo) return res.status(404).json({ message: 'Todo not found' });
+    return res.json(todo);
+  } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(400).json({ error: 'Invalid todo ID format' });
+    }
 
-  return res.json(todo);
+    return res.status(500).json({ error: error.message });
+  }
 };
 
-export const createTodo = (req, res) => {
-  const { text } = req.body;
+export const createTodo = async (req, res) => {
+  try {
+    const { text } = req.body;
 
-  const newTodo = { id: todos.length + 1, text, completed: false };
+    const newTodo = await Todo.create({ text, completed: false });
 
-  todos.push(newTodo);
+    return res.status(201).json(newTodo);
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: error.message });
+    }
 
-  return res.status(201).json(newTodo);
+    return res.status(500).json({ error: error.message });
+  }
 };
 
-export const updateTodo = (req, res) => {
-  const { id } = req.params;
-  const todoBody = req.body;
+export const updateTodo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const todoBody = req.body;
 
-  const todoIndex = todos.findIndex((todo) => todo.id === id);
+    const updatedTodo = await Todo.findByIdAndUpdate(id, { ...todoBody }, { new: true });
 
-  if (todoIndex === -1) return res.status(404).json({ message: 'Todo not found' });
+    if (!updatedTodo) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
 
-  const todo = todos[todoIndex];
-  const newTodo = { ...todo, ...todoBody };
+    return res.json(updatedTodo);
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: error.message });
+    }
+    if (error.name === 'CastError') {
+      return res.status(400).json({ error: 'Invalid todo ID format' });
+    }
 
-  todos[todoIndex] = newTodo;
-
-  return res.json(newTodo);
+    return res.status(500).json({ error: error.message });
+  }
 };
 
-export const deleteTodo = (req, res) => {
-  const { id } = req.params;
+export const deleteTodo = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  const todoIndex = todos.findIndex((todo) => todo.id === id);
+    const deletedTodo = await Todo.findByIdAndDelete(id);
 
-  if (todoIndex === -1) return res.status(404).json({ message: 'Todo not found' });
+    if (!deletedTodo) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
 
-  todos.splice(todoIndex, 1);
+    return res.json(deletedTodo);
+  } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(400).json({ error: 'Invalid todo ID format' });
+    }
 
-  return res.json(todos);
+    return res.status(500).json({ error: error.message });
+  }
 };
+
+// MongoDB/Mongoose errors (some):
+// CastError - Happens when ID format is invalid
+// ValidationError - Happens when data doesn't match schema

@@ -16,5 +16,5 @@ export const updateTodoSchema = todoSchema
   });
 
 export const todoIdSchema = z.object({
-  id: z.string().regex(/^\d+$/, 'ID must be a number').transform(Number),
+  id: z.string().length(24, { error: 'id length should be 24' }),
 });
