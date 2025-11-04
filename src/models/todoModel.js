@@ -19,17 +19,47 @@ const todoSchema = new mongoose.Schema(
   }
 );
 
-// Index definition - it's created if autoIndex: true or manually if false
+/**
+ * Indexes for better query performance
+ * These are DEFINITIONS - actual creation depends on autoIndex option (if true - they are created automatically, if false - we have to create them manually)
+ */
+
 // Index for filtering by completion status
 // Useful for queries like: "Show me all completed todos"
 todoSchema.index({ completed: 1 });
 
-// Index definition - it's created if autoIndex: true or manually if false
 // Index for sorting by creation date (newest first)
 // Useful for queries like: "Show me latest todos"
 todoSchema.index({ createdAt: -1 });
 
+/**
+ * Virtual Properties
+ * Computed fields that don't get stored in MongoDB
+ */
+
+// Virtual: status
+// Returns "done" if completed, "pending" if not
+todoSchema.virtual('status').get(function () {
+  return this.completed ? 'done' : 'pending';
+});
+
+/**
+ * Schema Options for JSON Output
+ * Controls what appears when document is converted to JSON
+ */
+todoSchema.set('toJSON', {
+  virtuals: true,
+});
+
+/**
+ * Create the Todo model
+ * Mongoose will automatically create a 'todos' collection
+ */
 export const Todo = mongoose.model('Todo', todoSchema);
+
+/**
+ * DB basic methods
+ */
 
 // Create todo:
 // const newTodo = await Todo.create({ text: 'Learn', completed: false });
