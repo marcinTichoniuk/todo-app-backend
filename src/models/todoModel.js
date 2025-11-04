@@ -19,6 +19,16 @@ const todoSchema = new mongoose.Schema(
   }
 );
 
+// Index definition - it's created if autoIndex: true or manually if false
+// Index for filtering by completion status
+// Useful for queries like: "Show me all completed todos"
+todoSchema.index({ completed: 1 });
+
+// Index definition - it's created if autoIndex: true or manually if false
+// Index for sorting by creation date (newest first)
+// Useful for queries like: "Show me latest todos"
+todoSchema.index({ createdAt: -1 });
+
 export const Todo = mongoose.model('Todo', todoSchema);
 
 // Create todo:
@@ -29,7 +39,7 @@ export const Todo = mongoose.model('Todo', todoSchema);
 // const todo = await Todo.findById('abc');
 
 // Update todo:
-// const updatedTodo = await Todo.findByIdAndUpdate('abc', { completed: true });
+// const updatedTodo = await Todo.findByIdAndUpdate('abc', { completed: true }, { new: true });
 
 // Delete todo:
-// await Todo.findByIdAndDelete('abc')
+// const deletedTodo = await Todo.findByIdAndDelete('abc')
