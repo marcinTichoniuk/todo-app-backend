@@ -4,8 +4,6 @@
  * @param {string} source - Where to get data from: 'body', 'params' or 'query'
  */
 
-import z, { ZodError } from 'zod';
-
 export const validate = (schema, source) => (req, res, next) => {
   try {
     // Get the data to validate based on source
@@ -20,13 +18,6 @@ export const validate = (schema, source) => (req, res, next) => {
     // Move to the next middleware
     next();
   } catch (error) {
-    if (error instanceof ZodError) {
-      return res.status(400).json({
-        message: 'Validation error',
-        details: z.treeifyError(error),
-      });
-    }
-
-    return res.status(500).json({ message: 'Internal Server Error' });
+    next(error);
   }
 };
