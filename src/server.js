@@ -1,5 +1,7 @@
 import express, { json } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+
 import todoRoutes from './routes/todoRoutes.js';
 import { config } from './config/config.js';
 import { connectDB } from './config/db.js';
@@ -10,8 +12,15 @@ const app = express();
 const PORT = config.port;
 
 // middlewares
-app.use(json());
+app.use(
+  helmet({
+    // it's not needed if API returns JSON, not HTML
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
 app.use(cors(corsOptions));
+app.use(json());
 
 // endpoints
 app.get('/', (req, res) => {
@@ -26,8 +35,10 @@ app.get('/', (req, res) => {
 // routes
 app.use('/todos', todoRoutes);
 
-// error handlers
+// 404 handler
 app.use(notFoundHandler);
+
+// error handler
 app.use(errorHandler);
 
 // start server
@@ -48,8 +59,9 @@ startServer();
 
 /* 
 Rate limiting - Prevent abuse (high priority)
-Helmet - Security headers (high priority)
+✅ Helmet - Security headers (high priority)
 Morgan - Request logging (high priority)
+✅ CORS - allow frontend to connect with backend from different origin (high priority) 
 Compression - Faster responses (medium)
 Sanitization - Prevent injection (medium)
 Health check - Monitoring (medium)
