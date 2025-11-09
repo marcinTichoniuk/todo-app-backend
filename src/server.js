@@ -7,6 +7,7 @@ import { config } from './config/config.js';
 import { connectDB } from './config/db.js';
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js';
 import { corsOptions } from './config/corsOptions.js';
+import { apiLimiter } from './config/rateLimitConfig.js';
 
 const app = express();
 const PORT = config.port;
@@ -14,12 +15,13 @@ const PORT = config.port;
 // middlewares
 app.use(
   helmet({
-    // it's not needed if API returns JSON, not HTML
+    // both options are not needed if API returns JSON, not HTML
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
   })
 );
-app.use(cors(corsOptions));
+app.use(cors(corsOptions)); // enable CORS for all routes
+app.use(apiLimiter); // apply rate limiting to all routes
 app.use(json());
 
 // endpoints
@@ -58,10 +60,10 @@ const startServer = async () => {
 startServer();
 
 /* 
-Rate limiting - Prevent abuse (high priority)
+Rate limiting - Prevent abuse (high priority) - come back to this when implementing authentication and Redis
 ✅ Helmet - Security headers (high priority)
 Morgan - Request logging (high priority)
-✅ CORS - allow frontend to connect with backend from different origin (high priority) 
+✅ CORS - Allow frontend to connect with backend from different origin (high priority) 
 Compression - Faster responses (medium)
 Sanitization - Prevent injection (medium)
 Health check - Monitoring (medium)
