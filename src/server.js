@@ -1,14 +1,17 @@
 import express, { json } from 'express';
+import cors from 'cors';
 import todoRoutes from './routes/todoRoutes.js';
 import { config } from './config/config.js';
 import { connectDB } from './config/db.js';
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js';
+import { corsOptions } from './config/corsOptions.js';
 
 const app = express();
 const PORT = config.port;
 
 // middlewares
 app.use(json());
+app.use(cors(corsOptions));
 
 // endpoints
 app.get('/', (req, res) => {
@@ -44,7 +47,10 @@ const startServer = async () => {
 startServer();
 
 /* 
-Option B: MongoDB Integration - Add real database (we're ready with DB_URI!)
-Option C: CORS - Connect to React front-end
-Option E: Request Logging - Add logging middleware (Morgan or custom)
+Rate limiting - Prevent abuse (high priority)
+Helmet - Security headers (high priority)
+Morgan - Request logging (high priority)
+Compression - Faster responses (medium)
+Sanitization - Prevent injection (medium)
+Health check - Monitoring (medium)
 */
