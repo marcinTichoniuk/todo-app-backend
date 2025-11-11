@@ -38,7 +38,7 @@ export const createTodo = async (req, res, next) => {
   }
 };
 
-export const updateTodo = async (req, res) => {
+export const updateTodo = async (req, res, next) => {
   try {
     const { id } = req.params;
     const todoBody = req.body;
@@ -55,7 +55,7 @@ export const updateTodo = async (req, res) => {
   }
 };
 
-export const deleteTodo = async (req, res) => {
+export const deleteTodo = async (req, res, next) => {
   try {
     const { id } = req.params;
 
