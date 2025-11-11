@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 import todoRoutes from './routes/todoRoutes.js';
+import healthRoutes from './routes/healthRoutes.js';
 import { config } from './config/config.js';
 import { connectDB } from './config/db.js';
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js';
@@ -35,6 +36,7 @@ app.get('/', (req, res) => {
 });
 
 // routes
+app.use('/health', healthRoutes);
 app.use('/todos', todoRoutes);
 
 // 404 handler
