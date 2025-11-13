@@ -7,8 +7,6 @@ const allowedOrigins = config.isDevelopment()
 
 export const corsOptions = {
   origin: (origin, callback) => {
-    console.log('origin:', origin);
-
     // Allow requests with no origin (mobile apps, Postman, server-to-server requests, checking endpoints directly in browser)
     if (!origin) {
       return callback(null, true);

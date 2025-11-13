@@ -14,7 +14,9 @@ export const apiLimiter = rateLimit({
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  // skip: config.isDevelopment(), // optional
+  skip: (req) => {
+    return req.path.startsWith('/health');
+  },
 });
 
 export const createLimiter = rateLimit({
@@ -31,4 +33,7 @@ export const createLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    return req.path.startsWith('/health');
+  },
 });
