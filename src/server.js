@@ -9,6 +9,7 @@ import { connectDB } from './config/db.js';
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js';
 import { corsOptions } from './config/corsOptions.js';
 import { apiLimiter } from './config/rateLimitConfig.js';
+import { requestLogger } from './middlewares/requestLogger.js';
 
 const app = express();
 const PORT = config.port;
@@ -24,6 +25,9 @@ app.use(
 app.use(cors(corsOptions)); // enable CORS for all routes
 app.use(apiLimiter); // apply rate limiting to all routes
 app.use(json());
+
+// logger
+app.use(requestLogger);
 
 // endpoints
 app.get('/', (req, res) => {
@@ -64,9 +68,10 @@ startServer();
 /* 
 Rate limiting - Prevent abuse (high priority) - come back to this when implementing authentication and Redis
 ✅ Helmet - Security headers (high priority)
-Morgan - Request logging (high priority)
+✅ Morgan - Request logging (high priority)
 ✅ CORS - Allow frontend to connect with backend from different origin (high priority) 
-Compression - Faster responses (medium)
+
+✅ Health check - Monitoring (medium)
 Sanitization - Prevent injection (medium)
-Health check - Monitoring (medium)
+Compression - Faster responses (medium) - rather on infra level
 */
